@@ -1,15 +1,32 @@
-import React from 'react';
+import React,{useState} from 'react';
+import axios from 'axios';
 
-class Register extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      
-    }
-  }
+function Register({ loadUser, onRouteChange }) {
 
-  render() {
-    const {onRouteChange} = this.props
+const [ email, setEmail ] = useState('');
+const [ password, setPassword ] = useState('');
+const [ name, setName ] = useState('');
+
+
+const onSubmit = () => {
+    axios.post('http://localhost:80/register', {
+      email: email,
+      password: password,
+      nam: name
+    })
+    .then((user) => {
+      console.log(user);
+      if (user) {
+        loadUser(user);
+        onRouteChange('home');
+      }
+      }
+    )
+    .catch(function (error) {
+      console.log(error);
+    });  
+}
+
     return (
       <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
         <main className="pa4 black-80">
@@ -23,6 +40,7 @@ class Register extends React.Component {
                   type="text"
                   name="name"
                   id="name"
+                  onChange={(e)=>setName(e.target.value)}
                   
                 />
               </div>
@@ -33,6 +51,7 @@ class Register extends React.Component {
                   type="email"
                   name="email-address"
                   id="email-address"
+                  onChange={(e) =>setEmail(e.target.value)}
                   
                 />
               </div>
@@ -43,13 +62,14 @@ class Register extends React.Component {
                   type="password"
                   name="password"
                   id="password"
+                  onChange={(e)=>setPassword(e.target.value)}
                   
                 />
               </div>
             </fieldset>
             <div className="">
               <input
-                onClick={() => onRouteChange('home')}
+                onClick={onSubmit}
                 className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
                 type="submit"
                 value="Register"
@@ -60,6 +80,5 @@ class Register extends React.Component {
       </article>
     );
   }
-}
 
 export default Register;

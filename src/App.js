@@ -9,6 +9,7 @@ import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
 import './App.css';
+import axios from 'axios';
 
 //You must add your own API key here from Clarifai.
 const app = new Clarifai.App({
@@ -38,8 +39,26 @@ class App extends Component {
       imageUrl: '',
       box: {},
       route: 'signin',
-      isSignedIn:false
+      isSignedIn: false,
+      user: {
+        id: '',
+        name: 'chloy',
+        email: '',
+        entrie: 0,
+        joined: '' 
+      }
     }
+    console.log(`c'est mon nom ${this.state.user.entrie}`)
+  }
+
+  loadUser = (data) => {
+    this.setState({user: {
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entrie: data.entrie,
+      joined: data.joined
+    }})
   }
 
   calculateFaceLocation = (data) => {
@@ -79,9 +98,19 @@ class App extends Component {
       .predict(
         Clarifai.FACE_DETECT_MODEL,
         this.state.input)
-      .then( response =>this.displayFaceBox(this.calculateFaceLocation(response)))
-      .catch(err => console.log(err.message) )
-      }
+        .then(response => {
+          if (response) {
+            axios.put('http://localhost:80/image',{
+              id: this.state.user.id }
+            )
+            .then(count => {
+              this.setState({user: { entrie: count}})
+            })
+            this.displayFaceBox(this.calculateFaceLocation(response));
+          }
+        })
+        .catch(err => console.log(err.message))  
+          }  
 
 render() {
     const { imageUrl, route, box } = this.state;
@@ -93,7 +122,7 @@ render() {
         <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange}/>
         { route === 'home' 
         ? <div>
-        <Rank/>
+        <Rank name={this.state.user.name} entrie={this.state.user.entrie}/>
         <ImageLinkForm
           onInputChange={this.onInputChange}
           onButtonSubmit={this.onButtonSubmit}
@@ -102,8 +131,8 @@ render() {
       </div>
        : (
         route === 'signin'
-        ? <Signin  onRouteChange={this.onRouteChange}/>
-        : <Register onRouteChange={this.onRouteChange}/>
+        ? <Signin  loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
+        : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
        )}
       </div>
     );

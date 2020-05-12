@@ -1,16 +1,30 @@
-import React from 'react';
+import React, {useState} from 'react';
+import axios from 'axios';
 
-class Signin extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+function Signin({loadUser, onRouteChange}) {
 
-    }
-  }
+const [ emailsignin, setEmailsignin ] = useState('');
+const [ passwordsignin, setPasswordsignin ] = useState('');
 
-  
-  render() {
-    const { onRouteChange } = this.props;
+
+const onSubmitSignin = () => {
+    axios.post('http://localhost:80/signin', {
+      email: emailsignin,
+      password: passwordsignin
+    })
+    .then(user => {
+      if(user.data.id){
+        console.log(user)
+        onRouteChange('home');
+        loadUser(user.data);
+      }
+      }
+    )
+    .catch(function (error) {
+      console.log(error);
+    });  
+}
+
     return (
       <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
         <main className="pa4 black-80">
@@ -24,7 +38,7 @@ class Signin extends React.Component {
                   type="email"
                   name="email-address"
                   id="email-address"
-                  onChange={this.onEmailChange}
+                  onChange={(e) => setEmailsignin(e.target.value)}
                 />
               </div>
               <div className="mv3">
@@ -34,26 +48,26 @@ class Signin extends React.Component {
                   type="password"
                   name="password"
                   id="password"
-                  onChange={this.onPasswordChange}
+                  onChange={(e) => setPasswordsignin(e.target.value)}
                 />
               </div>
             </fieldset>
             <div className="">
               <input
-                onClick={()=> onRouteChange('home')}
+                onClick={onSubmitSignin}
                 className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
                 type="submit"
                 value="Sign in"
               />
             </div>
             <div className="lh-copy mt3">
-              <p  onClick={() => onRouteChange('register')} className="f6 link dim black db pointer">Register</p>
+              <p onClick={()=>onSubmitSignin('register')} className="f6 link dim black db pointer">Register</p>
             </div>
           </div>
         </main>
       </article>
     );
   }
-}
+
 
 export default Signin;
