@@ -12,12 +12,12 @@ const onSubmit = () => {
     axios.post('http://localhost:80/register', {
       email: email,
       password: password,
-      nam: name
+      name: name
     })
     .then((user) => {
       console.log(user);
-      if (user) {
-        loadUser(user);
+      if (user.data.id) {
+        loadUser(user.data);
         onRouteChange('home');
       }
       }

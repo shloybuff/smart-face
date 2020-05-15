@@ -104,10 +104,12 @@ class App extends Component {
               id: this.state.user.id }
             )
             .then(count => {
-              this.setState({user: { entrie: count}})
+              this.setState(Object.assign(this.state.user, { entrie: count}))
             })
-            this.displayFaceBox(this.calculateFaceLocation(response));
+            .catch(console.log)
           }
+            this.displayFaceBox(this.calculateFaceLocation(response));
+          
         })
         .catch(err => console.log(err.message))  
           }  
