@@ -9,7 +9,7 @@ const [ name, setName ] = useState('');
 
 
 const onSubmit = () => {
-    axios.post('http://localhost:80/register', {
+    axios.post('https://evening-reaches-94247.herokuapp.com/register', {
       email: email,
       password: password,
       name: name

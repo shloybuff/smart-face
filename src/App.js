@@ -100,11 +100,11 @@ class App extends Component {
         this.state.input)
         .then(response => {
           if (response) {
-            axios.put('http://localhost:80/image',{
+            axios.put('https://evening-reaches-94247.herokuapp.com/image',{
               id: this.state.user.id }
             )
             .then(count => {
-              this.setState(Object.assign(this.state.user, { entrie: count}))
+              this.setState(Object.assign(this.state.user, { entrie: count.data}))
             })
             .catch(console.log)
           }
